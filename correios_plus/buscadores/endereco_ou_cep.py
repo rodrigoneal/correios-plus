@@ -39,7 +39,13 @@ class EnderecoOuCep:
             "self.", ""
         )
 
-    def requisicao(self):
+    def requisicao(self) -> httpx.Response:
+        """
+        Realiza uma requisição para o site do Correios.
+
+        Returns:
+            httpx.Response: Resposta da requisição
+        """
         data = {
             "relaxation": self.endereco_ou_cep,
             "tipoCEP": self.tipo,
@@ -55,23 +61,44 @@ class EnderecoOuCep:
                 data=data,
             )
 
-    def buscar(self):
+    def buscar(self) -> "EnderecoOuCep":
+        """
+        Busca os dados no site do Correios.
+
+        Returns:
+            EnderecoOuCep: Retorna uma instância da classe.
+        """
         response = self.requisicao()
         enderecos = self.extrair_dados(response)
         self.enderecos = [Endereco(**e) for e in enderecos]
         return self
 
-    def proximar_pagina(self):
+    def proximar_pagina(self) -> "EnderecoOuCep":
+        """
+        Retorna uma instância da classe com os dados da proxima pagina.
+
+        Returns:
+            EnderecoOuCep: Retorna uma instância da classe.
+        """
         self.pagini += 50
         self.pagfim += 50
         cls = deepcopy(self)
         cls.pagini = self.pagini
         cls.pagfim = self.pagfim
-        cls.enderecos = None
+        cls.enderecos = []
         cls.tipo = self.tipo
         return cls.buscar()
 
-    def _tr_to_dict(self, tr):
+    def _tr_to_dict(self, tr) -> dict:
+        """
+        Transforma uma linha da tabela HTML em um dicionário.
+
+        Arguments:
+            tr -- Tabela HTML
+
+        Returns:
+            dict -- Dicionário com os dados
+        """
         cidade_estado = tr[2].split("/")
         tr[2] = cidade_estado[0]
         tr.insert(3, cidade_estado[1])
@@ -79,6 +106,16 @@ class EnderecoOuCep:
 
     @classmethod
     def from_filtered(cls, original_instance, enderecos_filtrados) -> "EnderecoOuCep":
+        """
+        Cria uma instância da classe com os dados filtrados.
+
+        Arguments:
+            original_instance -- Instância da classe original
+            enderecos_filtrados -- Lista de endereços filtrados
+
+        Returns:
+            EnderecoOuCep -- Instância da classe
+        """
         instancia = cls(
             endereco_ou_cep=original_instance.endereco_ou_cep,
             tipo=original_instance.tipo,
@@ -87,6 +124,16 @@ class EnderecoOuCep:
         return instancia
 
     def filtrar(self, campo: CampoType, valor: str) -> "EnderecoOuCep":
+        """
+        Filtra os dados pelo campo e valor.
+
+        Arguments:
+            campo -- Campo a ser filtrado
+            valor -- Valor a ser filtrado
+
+        Returns:
+            EnderecoOuCep -- Instância da classe
+        """
         if not self.enderecos:
             self.buscar()
         campo_lower = campo.lower()
@@ -96,9 +143,27 @@ class EnderecoOuCep:
         return self.from_filtered(self, enderecos_filtrados)
 
     def __getitem__(self, index) -> Endereco:
+        """
+        Retorna o item pelo indice.
+
+        Arguments:
+            index -- Indice
+
+        Returns:
+            Endereco -- Objeto Endereco
+        """
         return self.enderecos[index]
 
     def extrair_dados(self, response) -> list[dict]:
+        """
+        Extrai os dados da resposta da requisição.
+
+        Arguments:
+            response -- Resposta da requisição
+
+        Returns:
+            list[dict] -- Lista de dicionários com os dados
+        """
         dados: list[dict] = []
         soup = BeautifulSoup(response.content, "html.parser")
         content_page = soup.find("div", {"class": "ctrlcontent"})
@@ -118,4 +183,10 @@ class EnderecoOuCep:
         return dados
 
     def __len__(self) -> int:
+        """
+        Retorna o tamanho da lista de endereços.
+
+        Returns:
+            int -- Tamanho da lista de endereços
+        """
         return len(self.enderecos)

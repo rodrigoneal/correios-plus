@@ -22,9 +22,9 @@ def test_se_buscar_proxima_pagina():
     segunda_pagina = primeira_pagina.proximar_pagina()
     terceira_pagina = segunda_pagina.proximar_pagina()
     assert (
-        primeira_pagina.enderecos[0]
-        != segunda_pagina.enderecos[0]
-        != terceira_pagina.enderecos[0]
+        primeira_pagina[0]
+        != segunda_pagina[0]
+        != terceira_pagina[0]
     )
 
 
@@ -43,6 +43,7 @@ def test_se_reproduz_o_objeto_corretamente():
         == "EnderecoOuCep(endereco_ou_cep='Alameda Santa Cruz', tipo='ALL')"
     )
 
+
 def test_se_pega_o_endereco_pelo_index():
     enderecos = EnderecoOuCep("Alameda Santa Cruz").filtrar(Campo.UF, "RJ")
-    assert "Alameda Santa Cruz" in enderecos.enderecos[0].logradouro
+    assert "Alameda Santa Cruz" in enderecos[0].logradouro
