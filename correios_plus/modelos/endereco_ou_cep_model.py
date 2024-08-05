@@ -8,3 +8,6 @@ class Endereco(NamedTuple):
     uf: str
     cep: str
     complemento: str = ""
+
+    def dict(self) -> dict:
+        return self._asdict()
