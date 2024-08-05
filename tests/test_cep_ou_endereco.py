@@ -42,3 +42,7 @@ def test_se_reproduz_o_objeto_corretamente():
         repr(EnderecoOuCep("Alameda Santa Cruz"))
         == "EnderecoOuCep(endereco_ou_cep='Alameda Santa Cruz', tipo='ALL')"
     )
+
+def test_se_pega_o_endereco_pelo_index():
+    enderecos = EnderecoOuCep("Alameda Santa Cruz").filtrar(Campo.UF, "RJ")
+    assert "Alameda Santa Cruz" in enderecos.enderecos[0].logradouro
