@@ -1,4 +1,4 @@
-from correios_plus.buscadores.cep_localidade import CEPLocalidade
+from correios_plus.buscadores import CEPLocalidade
 from correios_plus.filtros.filtro import UF, Campo, Localidade
 
 
@@ -25,7 +25,7 @@ def test_se_faz_paginacao():
     primeira_pagina = CEPLocalidade(
         UF.RJ, "Rio de Janeiro", tipo=Localidade.RUA, logradouro="Brasil", numero="42"
     ).buscar()
-    segunda_pagina = primeira_pagina.proximar_pagina()
+    segunda_pagina = primeira_pagina.proxima()
     assert primeira_pagina[0] != segunda_pagina[0]
 
 

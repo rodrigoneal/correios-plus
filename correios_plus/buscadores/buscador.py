@@ -111,7 +111,7 @@ class Buscador(ABC):
         """
         return {"enderecos": [e.dict() for e in self.enderecos]}
 
-    def proximar_pagina(self) -> "Buscador":
+    def proxima(self) -> "Buscador":
         """
         Retorna uma instância da classe com os dados da proxima pagina.
 

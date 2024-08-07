@@ -1,4 +1,4 @@
-from correios_plus.buscadores.endereco_ou_cep import EnderecoOuCep
+from correios_plus.buscadores import EnderecoOuCep
 from correios_plus.filtros.filtro import Campo
 
 
@@ -19,8 +19,8 @@ def test_se_filtrar_por_uf():
 
 def test_se_buscar_proxima_pagina():
     primeira_pagina = EnderecoOuCep("Alameda Santa Cruz").buscar()
-    segunda_pagina = primeira_pagina.proximar_pagina()
-    terceira_pagina = segunda_pagina.proximar_pagina()
+    segunda_pagina = primeira_pagina.proxima()
+    terceira_pagina = segunda_pagina.proxima()
     assert primeira_pagina[0] != segunda_pagina[0] != terceira_pagina[0]
 
 
